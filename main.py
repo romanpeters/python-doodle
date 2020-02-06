@@ -24,7 +24,7 @@ class Doodle:
     def update(self, url: str=None):
         """Send a request to Doodle"""
         if not url:
-            url=self.base_url
+            url = self.base_url
         req = requests.request('get', url)
         if req.status_code == 200:
             self.json_file = json.loads(req.text)
