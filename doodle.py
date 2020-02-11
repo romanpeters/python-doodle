@@ -17,8 +17,10 @@ class Doodle:
             parsed = urllib.parse.urlparse(url)
             poll_id = parsed.path.replace('/', '').replace('poll', '')
         self.base_url = f"https://doodle.com/api/v2.0/polls/{poll_id}?adminKey=&participantKey="
+        self.url = url if url else f"https://doodle.com/poll/{poll_id}"
         self.json_file = None
         self.update()
+
 
     def update(self, url: str=None):
         """Send a request to Doodle"""
