@@ -2,14 +2,16 @@
 Python wrapper for the Doodle API
 GET, no POST
 """
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 import json
 import urllib.parse
 import requests
 
+import pytz
+from pprint import pprint
+
 class Doodle:
     """Connect with Doodle"""
-    tz = timezone(timedelta(hours=-12))
 
     def __init__(self, url=None, poll_id=None):
         assert url or poll_id
@@ -20,6 +22,8 @@ class Doodle:
         self.url = url if url else f"https://doodle.com/poll/{poll_id}"
         self.json_file = None
         self.update()
+        self.timezone = pytz.timezone(self.json_file['initiator'].get('timeZone'))
+
 
 
     def update(self, url: str=None):
@@ -29,6 +33,7 @@ class Doodle:
         req = requests.request('get', url)
         if req.status_code == 200:
             self.json_file = json.loads(req.text)
+            pprint(self.json_file)
         elif req.status_code == 404:
             return
         else:
@@ -58,7 +63,7 @@ class Doodle:
         return self.json_file["initiator"][0]['name']
 
     def get_latest_change(self) -> datetime:
-        return datetime.fromtimestamp(self.json_file["latestChange"]/1000, tz=self.tz)
+        return datetime.fromtimestamp(self.json_file["latestChange"]/1000, tz=self.timezone)
 
     def get_final(self) -> list:
         options = self.json_file.get('options')
@@ -69,11 +74,11 @@ class Doodle:
                     dt_start = None
                     dt_end = None
                     try:
-                        dt_start = datetime.fromtimestamp(o.get('start')/1000, tz=self.tz)
+                        dt_start = datetime.fromtimestamp(o.get('start')/1000, tz=self.timezone)
                     except ValueError:
                         pass
                     try:
-                        dt_end = datetime.fromtimestamp(o.get('end')/1000, tz=self.tz)
+                        dt_end = datetime.fromtimestamp(o.get('end')/1000, tz=self.timezone)
                     except (ValueError, TypeError):
                         pass
                     if dt_start or dt_end:
