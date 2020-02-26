@@ -22,8 +22,8 @@ class Doodle:
         self.url = url if url else f"https://doodle.com/poll/{poll_id}"
         self.json_file = None
         self.update()
-        tz = pytz.timezone(self.json_file['initiator'].get('timeZone'))
-        self.timezone = tz if tz else timezone(timedelta(hours=-13))  # todo
+        tz = self.json_file['initiator'].get('timeZone')
+        self.timezone = pytz.timezone(tz) if tz else timezone(timedelta(hours=-12))  # todo
 
 
 
