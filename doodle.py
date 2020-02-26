@@ -27,8 +27,6 @@ class Doodle:
                                                                          # not sure why
         self.timezone = tz if tz else timezone(timedelta(hours=-12))  # todo -12 is system specific
 
-
-
     def update(self, url: str=None):
         """Send a request to Doodle"""
         if not url:
@@ -45,30 +43,38 @@ class Doodle:
             print(req.text)
             raise ConnectionError
 
-    def get_participants(self) -> list:
+    @property
+    def participants(self) -> list:
         return [p['name'] for p in self.json_file["participants"]]
 
-    def get_title(self) -> str:
+    @property
+    def title(self) -> str:
         return self.json_file['title']
 
-    def get_location(self) -> str or None:
+    @property
+    def location(self) -> str or None:
         location = self.json_file.get('location')
         if location:
             return location['name']
 
-    def get_description(self) -> str or None:
+    @property
+    def description(self) -> str or None:
         return self.json_file.get('description')
 
-    def get_comments(self) -> list:
+    @property
+    def comments(self) -> list:
         return self.json_file.get('comments')
 
-    def get_initiator(self) -> str:
+    @property
+    def initiator(self) -> str:
         return self.json_file["initiator"][0]['name']
 
-    def get_latest_change(self) -> datetime:
+    @property
+    def latest_change(self) -> datetime:
         return datetime.fromtimestamp(self.json_file["latestChange"]/1000, tz=self.timezone)
 
-    def get_final(self) -> list:
+    @property
+    def final(self) -> list:
         options = self.json_file.get('options')
         result = []
         if options:
@@ -88,6 +94,7 @@ class Doodle:
                         result.append((dt_start, dt_end))
             return result
 
+    @property
     def is_open(self) -> bool:
         if self.json_file['state'] == 'OPEN':
             return True
