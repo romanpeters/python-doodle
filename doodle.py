@@ -22,8 +22,10 @@ class Doodle:
         self.url = url if url else f"https://doodle.com/poll/{poll_id}"
         self.json_file = None
         self.update()
-        tz = self.json_file['initiator'].get('timeZone')
-        self.timezone = pytz.timezone(tz) if tz else timezone(timedelta(hours=-12))  # todo
+        tz = pytz.timezone(self.json_file['initiator'].get('timeZone'))  # sometimes the api provides a tz,
+                                                                         # sometimes it doesn't,
+                                                                         # not sure why
+        self.timezone = tz if tz else timezone(timedelta(hours=-12))  # todo -12 is system specific
 
 
 
