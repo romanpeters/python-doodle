@@ -2,7 +2,7 @@
 Python wrapper for the Doodle API
 GET, no POST
 """
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import json
 import urllib.parse
 import requests
@@ -22,7 +22,8 @@ class Doodle:
         self.url = url if url else f"https://doodle.com/poll/{poll_id}"
         self.json_file = None
         self.update()
-        self.timezone = pytz.timezone(self.json_file['initiator'].get('timeZone'))
+        tz = pytz.timezone(self.json_file['initiator'].get('timeZone'))
+        self.timezone = tz if tz else timezone(timedelta(hours=-13))  # todo
 
 
 
