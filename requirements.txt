@@ -1,4 +1,2 @@
 requests==2.22.0
 pytz==2019.3
-pre-commit==2.20.0
-black==22.10.0
